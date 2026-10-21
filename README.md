@@ -19,8 +19,8 @@ npm start
 Open http://127.0.0.1:5173 in a browser. You can also open `index.html` directly: the game uses plain scripts, no backend, and no fetched game assets. Optional Google Fonts require an internet connection; local fallback fonts keep the game usable offline.
 
 ```sh
-npm test   # Model invariants and every possible eight-year decision path
-npm run build   # Copies the four static application files to dist/
+npm test   # Model invariants and 4,096 deterministic sampled eight-year paths
+npm run build   # Copies the five static application files to dist/
 ```
 
 Deploy the contents of `dist/` to any static website host. No API keys, database, or environment variables are required. `PORT` optionally changes the local server port.
@@ -59,7 +59,8 @@ Before use as a substantive educational simulation, marine scientists and educat
 ```text
 index.html                 Accessible game interface and instructions
 style.css                  Responsive coastal visual design
-app.js                     Interaction, outcomes, and original pixel artwork
+app.js                     Interaction and outcomes
+scene.js                   Detailed 960 x 540 original pixel artwork
 simulation.js              Pure state transition model
 scripts/serve.cjs           Dependency-free local HTTP server
 scripts/build.cjs           Static distribution builder
@@ -70,8 +71,27 @@ tests/simulation.test.cjs   Model regression and bounds checks
 
 Potential future offerings include institutional licenses, subscriptions, and customized educational scenarios. Possible channels include schools, universities, museums, aquariums, and environmental organizations. These are product ideas only; this demo does not implement payments, accounts, analytics, or subscriptions.
 
-Scope is intentionally small: four decisions, four indicators, one fictional island, and an eight-year session. Future work could include expert-reviewed scenarios, teacher discussion guides, regional ecosystems, and saved comparisons.
+Scope is intentionally small: eight decisions, four headline indicators and five scene indicators, one fictional island, and an eight-year session. Future work could include expert-reviewed scenarios, teacher discussion guides, regional ecosystems, and saved comparisons.
 
 ## Artwork and attribution
 
 All pixel scenery is drawn programmatically for this project. The visual direction draws on cozy pixel-art fishing games; no Cast n Chill artwork, music, or other game assets are used. Fonts: DM Sans and Space Grotesk via Google Fonts, with system fallbacks. SDG 14 is referenced as an educational theme; this project does not imply United Nations endorsement.
+
+## Visible consequences update
+
+Eight policies now include **industrial fishing**, **untreated discharge**, and **unregulated coastal expansion**, alongside **coastal habitat restoration** and the original four choices. Cards show next-year headline score changes before confirmation. Coastal updates report actual changes in coral, woodland, litter, buildings, and boats.
+
+The 960 × 540 scene adds tiled roofs, window lights, woodland layers, tree stumps, sailboats and industrial trawlers with nets, branching and plate coral, shells, seafloor textures, light shafts, fish stripes, and a turtle that returns when coral and water recover.
+
+| Scene indicator | What changes | Persistent consequence |
+| --- | --- | --- |
+| Coral health | Colorful colonies fade to pale skeletons and broken branches | Damage accumulates; restoration and reserves help gradual recovery |
+| Water quality | Blue-green water becomes murky, with an outfall plume, particles and algae | Development adds runoff pressure |
+| Litter load | Bottles, bags and cans accumulate at the surface and seabed | Cleanup removes litter; development increases ongoing waste |
+| Tree cover | Woodland disappears into stumps and bare branches | Restoration replants the shore |
+| Buildings | Waterfront homes increase from 3 to at most 11 | Buildings remain even after a policy change |
+| Fishing fleet | Boats increase from 2 to at most 10, with industrial nets | Fleet pressure persists; fishing limits reduce it to a minimum of 1 |
+
+Housing and boats represent physical development, not overall wellbeing. Short-term revenue can coexist with environmental damage; later income depends on fish and water. Coral health is an illustrative combined stress proxy: pale coral is used as visual shorthand for stress, not a scientific claim that pollution is the only cause of real coral bleaching. Recovery rates and all coefficients remain fictional teaching assumptions.
+
+Verification includes harmful-policy trade-offs, persistent fleet/runoff pressure, cleanup and restoration, score bounds across 4,096 seeded eight-year paths, and browser checks for harmful and restorative runs, replay, pause, and mobile layout.

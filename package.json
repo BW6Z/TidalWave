@@ -1,0 +1,8 @@
+{
+  "name": "tidal-wave-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "An original pixel-art ocean stewardship game for SDG 14 education.",
+  "scripts": { "start": "node scripts/serve.cjs", "dev": "node scripts/serve.cjs", "test": "node --test tests/simulation.test.cjs", "build": "node scripts/build.cjs" },
+  "engines": { "node": ">=18" }
+}

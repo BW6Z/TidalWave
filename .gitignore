@@ -1,0 +1,20 @@
+# Dependencies and generated output
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+*.log
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.local
+
+# Local preview artifacts
+.preview/

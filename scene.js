@@ -7,7 +7,7 @@ function house(x,y,w,color){rect(x,y,w,25,color);rect(x-2,y+22,w+4,4,'#b4a47d');
 function boat(x,y,scale=1){poly([[x,y],[x+32*scale,y],[x+26*scale,y+8*scale],[x+7*scale,y+8*scale]],'#735e4c');rect(x+9*scale,y-7*scale,16*scale,7*scale,'#e9d6a5');rect(x+17*scale,y-25*scale,2*scale,21*scale,'#78624d');poly([[x+16*scale,y-24*scale],[x+3*scale,y-9*scale],[x+16*scale,y-9*scale]],'#f5e7bc');}
 function fish(x,y,size,color,reverse){ctx.save();ctx.translate(Math.round(x),Math.round(y));if(reverse)ctx.scale(-1,1);rect(0,0,size*3,size,color);rect(size,-size,size*2,size*3,color);poly([[0,0],[-size*2,-size],[-size*2,size*2],[0,size]],color);rect(size*2,0,1,1,'#173d4c');ctx.restore();}
 let t=0,last=0;
-function draw(now){const dt=Math.min(50,now-last||16);last=now;if(!paused)t+=dt/1000;
+function paintScene(state, t){
   rect(0,0,640,360,'#c3d9c8');rect(0,55,640,53,'#d3dfcb');rect(0,92,640,33,'#e5e5c4');
   rect(468,28,25,25,'#f8ebba');rect(464,34,33,13,'#f8ebba');
   for(let i=0;i<6;i++){let x=(i*139+t*1.1)%740-60;rect(x,25+i%3*16,49,5,'#eaf0d6');rect(x+10,20+i%3*16,24,6,'#eaf0d6');}
@@ -41,5 +41,22 @@ function draw(now){const dt=Math.min(50,now-last||16);last=now;if(!paused)t+=dt/
   for(let i=0;i<state.reserves;i++){let x=360+i*65;rect(x,153,2,20,'#bcd5ac');rect(x-3,150,8,4,'#e3ce79');rect(x+2,153,10,6,'#c9dc93');ctx.setLineDash([3,5]);ctx.strokeStyle='#d9e9ad55';ctx.strokeRect(x-23,175,52,125);ctx.setLineDash([]);}
   for(let i=0;i<Math.round(state.litter/4.5);i++){let x=(i*97+t*2)%640,y=169+i%3*8;rect(x,y,5,3,'#b2b298');rect(x+1,y-2,2,2,'#c9c4a5');}
   for(let i=0;i<10;i++){let x=(i*71+Math.sin(t+i)*3)%640,y=340-(t*9+i*23)%155;ctx.strokeStyle='#97c8bb66';ctx.strokeRect(Math.round(x),Math.round(y),2,2);}
+}
+function captureCoastComparison() {
+  // Match animation positions so only the policy consequences differ.
+  try {
+    paintScene(initial(), 0);
+    const before = $('ocean').toDataURL('image/png');
+    paintScene(state, 0);
+    return { before, after: $('ocean').toDataURL('image/png') };
+  } finally {
+    paintScene(state, t);
+  }
+}
+function draw(now) {
+  const dt = Math.min(50, now - last || 16); last = now;
+  if (!paused) t += dt / 1000;
+  paintScene(state, t);
   requestAnimationFrame(draw);
-}requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);

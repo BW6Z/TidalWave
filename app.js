@@ -36,6 +36,7 @@ function finish() {
   $('result-title').textContent = minimum >= 45 ? 'A coast with a future.' : state.fish >= 60 && state.water >= 60 ? 'Nature is recovering. People need support.' : state.fish < 30 || state.water < 30 ? 'The sea needs a different story.' : 'Progress comes with trade-offs.';
   $('result-copy').textContent = `You created ${state.reserves} marine ${state.reserves === 1 ? 'reserve' : 'reserves'} and shaped eight years of life in Bluehaven. ${minimum >= 45 ? 'Your decisions kept every part of the coast above 45. Try a different path and compare the balance.' : 'A healthy ocean and a healthy community need each other. Which decision would you change next time?'} Here is your coast compared with eight years of taking no action.`;
   $('history').innerHTML = `<table><caption>Final scores · illustrative indices out of 100</caption><thead><tr><th>Indicator</th><th>Your coast</th><th>No action</th></tr></thead><tbody>${definitions.map(([key,name])=>`<tr><td>${name}</td><td>${state[key]}</td><td>${baseline[key]}</td></tr>`).join('')}</tbody></table><p class="eyebrow">YOUR JOURNEY</p><p style="font-size:11px;line-height:1.9">${history.map((h,i)=>`${i+1}. ${policies.find(p=>p.id===h.policy).subtitle}`).join(' → ')}</p>`;
+  showComparison();
   $('results').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'nearest'});
 }
 $('replay').onclick=()=>{state=initial();history=[];selected=null;$('consequences').textContent='Watch the reef, shoreline and harbor change with your decisions.';$('results').hidden=true;document.querySelector('.decisions').hidden=false;$('selection-hint').textContent='Every choice leaves a ripple.';$('message').textContent='“The sea has always looked after us. Now it’s our turn.” — The people of Bluehaven';render();};
@@ -43,3 +44,25 @@ $('help').onclick=()=>$('instructions').showModal();
 $('close-help').onclick=$('start').onclick=()=>$('instructions').close();
 function updatePause(){ $('pause').setAttribute('aria-pressed',String(paused));$('pause').setAttribute('aria-label',paused?'Resume ocean animation':'Pause ocean animation');$('pause').textContent=paused?'▷':'Ⅱ'; }
 $('pause').onclick=()=>{paused=!paused;updatePause();};updatePause();render();
+
+function showComparison() {
+  if (state.year !== 8) return;
+  const snapshots = captureCoastComparison();
+  $('coast-before').src = snapshots.before;
+  $('coast-after').src = snapshots.after;
+  const startState = initial();
+  const rows = [...definitions.map(([key, name]) => [key, name]), ['coral', 'Coral health'], ['trees', 'Tree cover'], ['litter', 'Litter load'], ['buildings', 'Buildings'], ['fleet', 'Fishing boats']];
+  $('comparison-metrics').innerHTML = `<table><caption>Before your first decision → End of year 8</caption><thead><tr><th scope="col">Indicator</th><th scope="col">Before</th><th scope="col">After</th><th scope="col">Change</th></tr></thead><tbody>${rows.map(([key, name]) => {
+    const change = state[key] - startState[key];
+    const neutral = key === 'buildings' || key === 'fleet';
+    const improved = key === 'litter' ? change < 0 : change > 0;
+    const tone = change === 0 || neutral ? '' : improved ? 'improved' : 'declined';
+    return `<tr><th scope="row">${name}</th><td>${startState[key]}</td><td>${state[key]}</td><td class="${tone}">${change > 0 ? '+' : ''}${change}</td></tr>`;
+  }).join('')}</tbody></table>`;
+  $('coast-after').alt = `Bluehaven after eight years: fish ${state.fish}, water ${state.water}, coral ${state.coral}, tree cover ${state.trees}, litter ${state.litter}, ${state.buildings} buildings and ${state.fleet} boats.`;
+  if (!$('comparison').open) $('comparison').showModal();
+  $('comparison').scrollTop = 0;
+}
+$('show-comparison').onclick = showComparison;
+$('close-comparison').onclick = $('comparison-done').onclick = () => $('comparison').close();
+$('comparison').addEventListener('close', () => $('show-comparison').focus({ preventScroll: true }));
